@@ -1,14 +1,12 @@
 package com.example.routes.web
 
-import com.example.enums.RoutesTitles
+import com.example.enums.RoutesEnum
 import com.example.models.movieStorage
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.html.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.html.*
-import java.nio.file.Paths
 
 fun Route.webFilmsRouting() {
 
@@ -18,43 +16,72 @@ fun Route.webFilmsRouting() {
         }
 
         // HOME
-        get(RoutesTitles.home.route) {
+        get(RoutesEnum.home.route) {
             call.respondHtmlTemplate(LayoutTemplate()) {
-                this.content = RoutesTitles.home.route
-                this.sTitle = RoutesTitles.home.title
+                this.content = RoutesEnum.home.route
+                this.sTitle = RoutesEnum.home.title
             }
         }
 
         // ALL
-        get(RoutesTitles.all.route) {
+        get(RoutesEnum.all.route) {
 
             call.respondHtmlTemplate(LayoutTemplate()) {
-                this.content = RoutesTitles.all.route
-                this.sTitle = RoutesTitles.all.title
+                this.content = RoutesEnum.all.route
+                this.sTitle = RoutesEnum.all.title
             }
         }
 
         //NEW
-        get(RoutesTitles.new.route) {
+        get(RoutesEnum.new.route) {
             call.respondHtmlTemplate(LayoutTemplate()) {
-                this.content = RoutesTitles.new.route
-                this.sTitle = RoutesTitles.new.title
+                this.content = RoutesEnum.new.route
+                this.sTitle = RoutesEnum.new.title
             }
         }
 
         //DETAIL
-        get(RoutesTitles.detail.route) {
+        get(RoutesEnum.detail.route) {
+
+            val exmovieId = call.parameters["id"] ?: return@get call.respondText(
+                "Missing id",
+                status = HttpStatusCode.BadRequest
+            )
             call.respondHtmlTemplate(LayoutTemplate()) {
-                this.content = RoutesTitles.detail.route
-                this.sTitle = RoutesTitles.detail.title
+                this.moveId = exmovieId
+                this.content = RoutesEnum.detail.route
+                this.sTitle = RoutesEnum.detail.title
+
             }
         }
 
         //ABOUT US
-        get(RoutesTitles.about.route) {
+        get(RoutesEnum.about.route) {
             call.respondHtmlTemplate(LayoutTemplate()) {
-                this.content = RoutesTitles.about.route
-                this.sTitle = RoutesTitles.about.title
+                this.content = RoutesEnum.about.route
+                this.sTitle = RoutesEnum.about.title
+
+
+            }
+        }
+
+        get("delete/id/{id?}") {
+            val exmovieId = call.parameters["id"] ?: return@get call.respondText(
+                "Missing id",
+                status = HttpStatusCode.BadRequest
+            )
+            movieStorage.removeIf { it.id == exmovieId }
+
+            call.respondRedirect("/all")
+        }
+
+        //ABOUT US
+        get(RoutesEnum.about.route) {
+            call.respondHtmlTemplate(LayoutTemplate()) {
+                this.content = RoutesEnum.about.route
+                this.sTitle = RoutesEnum.about.title
+
+
             }
         }
     }

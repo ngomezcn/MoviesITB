@@ -14,8 +14,8 @@ fun main() {
 
     // movieStorage.add(Movie("1", "Hobbit", "2016", "FPS", "BugiSoft", "baixa.jpeg"))
     //movieStorage.add(Movie("2", "Interestelar", "2016", "FPS", "BugiSoft", "baixa1.jpeg"))
-    movieStorage.add(Movie( "Alien", "2016", "FPS", "BugiSoft", "alien.jpg"))
-    movieStorage.add(Movie( "Hobbit", "2011", "FPS", "IDK", "hobbit.jpeg"))
+    movieStorage.add(Movie( "Alien", "2016", "Action", "Peter Jackson", "alien.jpg"))
+    movieStorage.add(Movie( "Hobbit", "2011", "Adventure", "Willyrex", "hobbit.jpeg"))
     commentStorage.add(Comment("1", "1","Soy un comentario", "03/09/2022", ))
 
     println(movieStorage[0])

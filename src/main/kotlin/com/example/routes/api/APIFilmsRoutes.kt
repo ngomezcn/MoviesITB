@@ -1,6 +1,6 @@
 package com.example.routes.api
 
-import com.example.enums.RoutesTitles
+import com.example.enums.RoutesEnum
 import com.example.models.*
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -64,7 +64,7 @@ fun Route.apiFilmsRouting() {
                     is PartData.FileItem -> {
                         oMovie.image = (oMovie.title + "." + (part.originalFileName as String).substringAfterLast(".")).replace(" ", "_")
                         var fileBytes = part.streamProvider().readBytes()
-                        File(moviesPath + oMovie.image).writeBytes(fileBytes)
+                        File(File(".").getCanonicalPath()+"/build/resources/main"+moviesPath + oMovie.image).writeBytes(fileBytes)
                     }
                     else -> {
                         println("No se ha podido guardar la imagen")
@@ -73,7 +73,7 @@ fun Route.apiFilmsRouting() {
             movieStorage.add(oMovie)
             println(movieStorage)
 
-            call.respondRedirect("../${RoutesTitles.detail}/${oMovie.id.toString()}")
+            call.respondRedirect("../${RoutesEnum.detail}/${oMovie.id.toString()}")
 
             call.respondText("Film stored correctly and \"${oMovie.image} is uploaded to '${moviesPath+oMovie.image}'\"", status = HttpStatusCode.Created)
         }

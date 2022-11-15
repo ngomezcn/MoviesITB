@@ -16,4 +16,4 @@ data class Movie(var title: String, var year: String, var gender: String, var di
 }
 
 val movieStorage = mutableListOf<Movie>()
-val moviesPath = "D:/GitRepos/MoviesITB/src/main/resources/static/images/movies/"
+val moviesPath = "/static/images/movies/"

@@ -1,13 +1,15 @@
 package com.example.routes.web
 
-import com.example.enums.RoutesTitles
+import com.example.enums.RoutesEnum
 import com.example.models.movieStorage
 import io.ktor.server.html.*
 import kotlinx.html.*
 
 class LayoutTemplate: Template<HTML> {
     val menu = TemplatePlaceholder<Menu>()
+
     lateinit var content: String
+    lateinit var moveId: String
     lateinit var sTitle: String
     override fun HTML.apply() {
 
@@ -44,10 +46,10 @@ class LayoutTemplate: Template<HTML> {
                 text(sTitle)
             }
             when(content) {
-                RoutesTitles.all.route -> insert(AllFilmsTemplate(), TemplatePlaceholder())
-                RoutesTitles.about.route -> insert(AboutUsTemplate(), TemplatePlaceholder())
-                RoutesTitles.new.route -> insert(NewTemplate(), TemplatePlaceholder())
-                RoutesTitles.detail.route -> insert(DetailTemplate(), TemplatePlaceholder())
+                RoutesEnum.all.route -> insert(AllFilmsTemplate(), TemplatePlaceholder())
+                RoutesEnum.about.route -> insert(AboutUsTemplate(), TemplatePlaceholder())
+                RoutesEnum.new.route -> insert(NewTemplate(), TemplatePlaceholder())
+                RoutesEnum.detail.route -> insert(DetailTemplate(moveId), TemplatePlaceholder())
             }
             
         }
@@ -60,7 +62,7 @@ class Menu: Template<FlowContent> {
 
         ul {
             li {
-                if(active == RoutesTitles.home.route) {
+                if(active == RoutesEnum.home.route) {
                     classes= setOf("active")
                 }
                 a {
@@ -69,7 +71,7 @@ class Menu: Template<FlowContent> {
                 }
             }
             li {
-                if(active == RoutesTitles.all.route) {
+                if(active == RoutesEnum.all.route) {
                     classes= setOf("active")
                 }
                 a {
@@ -78,7 +80,7 @@ class Menu: Template<FlowContent> {
                 }
             }
             li {
-                if(active == RoutesTitles.new.route) {
+                if(active == RoutesEnum.new.route) {
                     classes= setOf("active")
                 }
                 a {
@@ -87,7 +89,7 @@ class Menu: Template<FlowContent> {
                 }
             }
             li {
-                if(active == RoutesTitles.about.route) {
+                if(active == RoutesEnum.about.route) {
                     classes= setOf("active")
                 }
                 style = "float:right"
@@ -104,12 +106,16 @@ class Menu: Template<FlowContent> {
 class AllFilmsTemplate: Template<FlowContent> {
     override fun FlowContent.apply() {
         val path = "/static/images/movies/"
+
         main("grid") {
             for (i in movieStorage) {
 
                 article {
                     img {
+                        //src = path + i.image
+
                         src = path + i.image
+
                         alt = i.title
                         classes = setOf("movie_image")
                     }
@@ -118,7 +124,7 @@ class AllFilmsTemplate: Template<FlowContent> {
                         p { +"""${i.gender} """ }
                         button {
                             type=ButtonType.button
-                            onClick="location.href='/${RoutesTitles.detail}/${i.id.toString()}'"
+                            onClick="location.href='/${RoutesEnum.detail}/${i.id.toString()}'"
                            +"Detall"
                         }
                     }
@@ -189,17 +195,32 @@ class NewTemplate: Template<FlowContent> {
     }
 }
 
-class DetailTemplate: Template<FlowContent> {
-    lateinit var moveId: String
+class DetailTemplate(private val movieId: String): Template<FlowContent> {
 
     override fun FlowContent.apply() {
-        h4{
-            +"Naïm Gómez"
+        println(movieId)
+        val path = "/static/images/movies/"
+
+        val movie = movieStorage.find { it.id == movieId }
+
+            h1{
+                + "Title: ${movie!!.title}"
+            }
+            h2{
+            + "Gender: ${movie!!.gender}"
+            }
+            h2{
+            + "Gender: ${movie!!.director}"
+            }
+
+        img {
+            src = path + movie!!.image
         }
-        h4{
-            +"naim.gomez.7e5@itb.cat"
+
+        button(classes = "float-left submit-button") {
+            onClick = "location.href = '/delete/id/${movie!!.id}' ;"
+            +"""Eliminar peli"""
         }
     }
 }
-
 
